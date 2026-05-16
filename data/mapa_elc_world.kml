@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<GroundOverlay>
+<name>layer</name>
+<Icon><href>mapa_elc_world.png</href><viewBoundScale>0.75</viewBoundScale></Icon>
+	<LatLonBox>
+		<north>90.000007823</north><south>-60</south><east>180.000018775</east><west>-180</west>
+	</LatLonBox>
+</GroundOverlay></kml>

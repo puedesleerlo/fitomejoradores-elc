@@ -1,0 +1,19 @@
+[project]
+name = "fitomejoradores"
+version = "0.1.0"
+description = "Explorador de Nichos ELC para programas de fitomejoramiento"
+authors = ["Alejandro Tabares <atabaresa@unal.edu.co>"]
+channels = ["conda-forge"]
+platforms = ["osx-arm64", "osx-64", "linux-64", "win-64"]
+
+[tasks]
+run = { cmd = "streamlit run app.py", description = "Launch the FitoMejoradores Streamlit app" }
+
+[dependencies]
+python = ">=3.11,<3.13"
+streamlit = ">=1.45.0,<1.53"
+pandas = ">=2.1.0,<3"
+openpyxl = ">=3.1.0,<4"
+xlrd = ">=2.0.0,<3"
+pydeck = ">=0.9.0,<1"
+numpy = ">=1.26.0,<2"
