@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PhaseoluSearch | Caracterización ecogeográfica de Phaseolus lunatus L.</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+:root {
+  --green-900: #1a5632;
+  --green-700: #2d8a4e;
+  --green-500: #43a85f;
+  --green-100: #e8f5e9;
+  --green-50:  #f5fbf6;
+  --gray-700: #1f2933;
+  --gray-500: #555;
+  --gray-300: #d0d7de;
+  --gray-100: #f3f5f7;
+  --highlight: #ffd700;
+  --border-blue: #003366;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; font-family: 'Nunito Sans', sans-serif;
+  color: var(--gray-700); background: #fff; }
+
+h1, h2, h3, h4 { font-family: 'Nunito Sans', sans-serif; font-weight: 700; margin: 0; }
+
+.header {
+  background: linear-gradient(135deg, #1a5632 0%, #2d8a4e 50%, #43a85f 100%);
+  padding: 1.4rem 2rem; color: white; box-shadow: 0 4px 16px rgba(26,86,50,0.3);
+}
+.header h1 { font-size: 1.8rem; font-weight: 800; }
+.header p  { font-size: 0.95rem; opacity: 0.9; margin: 0.2rem 0 0; }
+
+.intro {
+  background: var(--green-50);
+  border-bottom: 1px solid #dcedc8;
+  padding: 1rem 2rem;
+  font-size: 0.88rem;
+  color: var(--gray-700);
+  line-height: 1.5;
+}
+.intro p { margin: 0; }
+.intro a { color: var(--green-700); text-decoration: none; }
+.intro a:hover { text-decoration: underline; }
+
+.manual {
+  background: white;
+  border: 1px solid var(--gray-300);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+}
+.manual h2 { font-size: 1.1rem; color: var(--green-900); margin-bottom: 0.6rem; }
+.manual summary {
+  cursor: pointer; font-weight: 700; color: var(--green-900);
+  padding: 0.4rem 0; font-size: 0.95rem;
+}
+.manual summary:hover { color: var(--green-700); }
+.manual .manual-body { padding: 0.3rem 0 0.6rem 0.4rem; font-size: 0.86rem; line-height: 1.5; }
+.manual .manual-body h3 {
+  font-size: 0.9rem; color: var(--green-900); margin: 0.6rem 0 0.25rem;
+}
+.manual .manual-body p { margin: 0.25rem 0; }
+.manual .manual-body ul { margin: 0.25rem 0 0.5rem 1.1rem; padding: 0; }
+.manual .manual-body li { margin: 0.15rem 0; }
+
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  min-height: calc(100vh - 110px);
+}
+
+.sidebar {
+  background: linear-gradient(180deg, var(--green-50) 0%, #edf7ef 100%);
+  border: 1px solid #dcedc8; border-radius: 12px; padding: 1rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 130px);
+}
+.sidebar h3 { color: var(--green-900); font-size: 1.05rem; margin-bottom: 0.3rem; }
+.sidebar h4 { color: var(--green-900); font-size: 0.92rem; margin: 0.8rem 0 0.4rem; }
+.sidebar label { font-size: 0.8rem; font-weight: 700; color: var(--green-900); display: block; margin-bottom: 0.2rem; }
+.sidebar select, .sidebar input[type=file] {
+  width: 100%; padding: 0.45rem; border: 1px solid #c8e6c9; border-radius: 6px;
+  background: white; font-family: inherit; font-size: 0.85rem;
+}
+
+.divider {
+  height: 3px; border-radius: 2px; margin: 0.9rem 0;
+  background: linear-gradient(90deg, #1a5632, #43a85f, #8bc34a);
+}
+
+.metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 0.45rem; margin-top: 0.4rem; }
+.metric {
+  background: white; border: 1px solid var(--gray-300); border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+}
+.metric .label { font-size: 0.7rem; color: var(--gray-500); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+.metric .value { font-size: 1.05rem; font-weight: 800; color: var(--green-900); }
+
+.slider-row { margin-bottom: 0.6rem; }
+.slider-row .desc { font-size: 0.78rem; color: var(--gray-500); margin-bottom: 0.15rem; }
+.slider-row .range-line { font-size: 0.72rem; color: var(--gray-500); display: flex; justify-content: space-between; }
+.range-inputs { display: flex; align-items: center; gap: 0.4rem; }
+.range-inputs input[type=number] {
+  width: 70px; padding: 0.25rem 0.35rem; font-family: inherit; font-size: 0.78rem;
+  border: 1px solid #c8e6c9; border-radius: 5px;
+}
+
+.btn {
+  background: linear-gradient(135deg, var(--green-700), var(--green-500));
+  color: white; border: none; border-radius: 8px; padding: 0.5rem 1rem;
+  font-family: inherit; font-weight: 700; cursor: pointer; font-size: 0.82rem;
+  box-shadow: 0 2px 6px rgba(45,138,78,0.3); transition: transform 0.15s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,86,50,0.35); }
+.btn:active { transform: translateY(0); }
+.btn-secondary {
+  background: white; color: var(--green-900); border: 1px solid var(--green-500);
+  box-shadow: none;
+}
+
+.main {
+  display: flex; flex-direction: column; gap: 1rem; min-width: 0;
+}
+
+.map-block {
+  display: grid;
+  grid-template-columns: 1fr 200px;
+  gap: 0.7rem;
+}
+#map {
+  height: 580px; border-radius: 12px; border: 1px solid var(--gray-300);
+  background: #f8fafc;
+}
+.legend-panel {
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.legend-panel .panel {
+  background: white; border: 1px solid var(--gray-300); border-radius: 8px;
+  padding: 0.7rem 0.8rem;
+}
+.legend-panel .panel-title {
+  font-size: 0.78rem; color: var(--green-900); font-weight: 800;
+  margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.layer-row { display: flex; align-items: center; gap: 0.45rem; font-size: 0.85rem; margin: 0.2rem 0; }
+.layer-row input { transform: scale(1.1); accent-color: var(--green-700); }
+
+.legend-row { font-size: 0.78rem; margin: 3px 0; display: flex; align-items: center; gap: 0.4rem; }
+.swatch { display: inline-block; width: 14px; height: 14px; border: 1px solid var(--border-blue); border-radius: 3px; }
+.swatch-dot { width: 10px; height: 10px; border-radius: 50%; border: none; }
+
+.section { background: white; border: 1px solid var(--gray-300); border-radius: 12px; padding: 1rem 1.2rem; }
+.section h2 { font-size: 1.1rem; color: var(--green-900); margin-bottom: 0.5rem; }
+
+.summary-bar { display: flex; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.summary-bar .stat .num { font-weight: 800; font-size: 1.3rem; color: var(--green-900); }
+.summary-bar .stat .lbl { font-size: 0.75rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.04em; }
+
+.table-wrap { overflow: auto; max-height: 420px; border: 1px solid var(--gray-300); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+thead th {
+  background: var(--green-100); color: var(--green-900); text-align: left;
+  padding: 0.45rem 0.7rem; font-weight: 700; position: sticky; top: 0; z-index: 1;
+  border-bottom: 2px solid var(--green-500);
+}
+tbody td { padding: 0.35rem 0.7rem; border-bottom: 1px solid var(--gray-100); }
+tbody tr:hover { background: var(--green-50); }
+.num-cell { text-align: right; font-variant-numeric: tabular-nums; }
+
+.comp-bar { background: var(--gray-100); border-radius: 4px; height: 8px; position: relative; overflow: hidden; }
+.comp-bar > div { background: linear-gradient(90deg, var(--green-700), var(--green-500)); height: 100%; }
+.comp-cell { display: flex; align-items: center; gap: 0.4rem; min-width: 110px; }
+.comp-cell .v { font-size: 0.78rem; color: var(--gray-700); font-variant-numeric: tabular-nums; }
+
+.empty {
+  padding: 1.2rem; text-align: center; color: var(--gray-500); font-style: italic;
+  background: var(--green-50); border-radius: 8px;
+}
+
+.tip-box {
+  background: var(--green-900); color: white; padding: 6px 10px; border-radius: 5px;
+  font-family: 'Nunito Sans', sans-serif; font-size: 0.82rem; line-height: 1.35;
+}
+.tip-box .sub { font-size: 0.72rem; opacity: 0.85; margin-top: 2px; }
+
+.loading-overlay {
+  position: fixed; inset: 0; background: rgba(255,255,255,0.94); z-index: 9999;
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  font-weight: 700; color: var(--green-900);
+}
+.spinner {
+  width: 44px; height: 44px; border: 4px solid var(--green-100);
+  border-top-color: var(--green-700); border-radius: 50%;
+  animation: spin 0.9s linear infinite; margin-bottom: 0.7rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+footer {
+  text-align: center; padding: 1.2rem; color: #999; font-size: 0.78rem;
+  border-top: 1px solid #e0e0e0; margin-top: 1rem;
+}
+
+footer b { color: var(--green-900); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .map-block { grid-template-columns: 1fr; }
+  .sidebar { max-height: none; }
+  #map { height: 460px; }
+}
+</style>
+</head>
+<body>
+
+<div id="loading" class="loading-overlay">
+  <div class="spinner"></div>
+  <div id="loadingMsg">Cargando datos&hellip;</div>
+</div>
+
+<header class="header">
+  <h1>PhaseoluSearch</h1>
+  <p>Caracterizaci&oacute;n ecogeogr&aacute;fica del frijol Lima (<i>Phaseolus lunatus L.</i>)</p>
+</header>
+
+<section class="intro">
+  <p>
+    Plataforma interactiva desarrollada para visualizar y explorar la
+    caracterizaci&oacute;n ecogeogr&aacute;fica del frijol Lima
+    (<i>Phaseolus lunatus L.</i>). A partir de datos de pasaporte, se
+    integraron variables bioclim&aacute;ticas, geof&iacute;sicas y
+    ed&aacute;ficas mediante las herramientas CAPFITOGEN3
+    (Parra-Quijano et al., 2024) para identificar agrupamientos
+    ambientales y patrones de distribuci&oacute;n dentro de colecciones
+    de germoplasma. La plataforma permite explorar ambientes
+    ecogeogr&aacute;ficos, filtrar condiciones de inter&eacute;s y
+    consultar las accesiones asociadas a distintos contextos
+    clim&aacute;ticos.
+  </p>
+  <p style="margin-top:0.6rem;">
+    PhaseoluSearch est&aacute; basada en los resultados del estudio:
+    Pati&ntilde;o-Garc&iacute;a, A., Chac&oacute;n-S&aacute;nchez, M. I.,
+    &amp; Parra-Quijano, M. (2026). <i>Ecogeographic characterization of
+    wild and domesticated Lima bean (Phaseolus lunatus L.)
+    accessions</i>. Agronomy Journal, 117(3), 1023&ndash;1038.
+    <a href="https://doi.org/10.1002/agj2.25047" target="_blank" rel="noopener">
+      https://doi.org/10.1002/agj2.25047
+    </a>
+  </p>
+</section>
+
+<div class="layout">
+
+  <!-- ───────── Sidebar ───────── -->
+  <aside class="sidebar">
+    <h3>Selecciona un Nicho</h3>
+    <label for="nicheSelect">Busca por nombre del nicho</label>
+    <select id="nicheSelect"></select>
+
+    <div class="divider"></div>
+
+    <h4>Perfil del Nicho Seleccionado</h4>
+    <div id="statsCard" class="metrics"></div>
+    <p id="rangeLine" style="font-size:0.72rem;color:#666;margin:0.5rem 0 0;"></p>
+
+    <div class="divider"></div>
+
+    <h4>Afinar por Variables Ambientales</h4>
+    <p style="font-size:0.75rem;color:#666;margin:0 0 0.5rem;">
+      Ajuste los rangos para precisar las condiciones deseadas. Los nichos cuyo
+      rango se intersecta con el filtro se mostrar&aacute;n en el mapa.
+    </p>
+    <div id="sliders"></div>
+    <button id="resetBtn" class="btn btn-secondary" style="margin-top:0.4rem;">
+      Restablecer al nicho seleccionado
+    </button>
+
+    <div class="divider"></div>
+
+    <h4>Cargar Accesiones</h4>
+    <p style="font-size:0.75rem;color:#666;margin:0 0 0.4rem;">
+      Suba un archivo CSV con las coordenadas de sus accesiones
+      (columnas: ACCENUMB, SPECIES, CROPNAME, ORIGCTY, NAMECTY,
+      ADM1, DECLATITUDE, DECLONGITUDE). El nicho se asignara
+      automaticamente segun la ubicacion geografica.
+    </p>
+    <a href="data/plantilla_accesiones.csv" download
+       class="btn btn-secondary" style="display:inline-block;font-size:0.78rem;
+       padding:0.3rem 0.7rem;margin-bottom:0.5rem;text-decoration:none;">
+      Descargar plantilla CSV
+    </a>
+    <input type="file" id="csvUpload" accept=".csv"
+           style="width:100%;margin-top:0.3rem;" />
+    <p id="uploadMsg" style="font-size:0.72rem;color:#666;margin:0.3rem 0 0;"></p>
+
+    <div class="divider"></div>
+
+    <h4>Sobre los Nichos</h4>
+    <p style="font-size:0.75rem;color:#666;margin:0;">
+      Los nichos agrupan zonas del mundo con condiciones ambientales
+      similares. Cada nicho tiene un perfil climatico y edafico
+      caracteristico definido por 14 variables ambientales.
+    </p>
+  </aside>
+
+  <!-- ───────── Main ───────── -->
+  <main class="main">
+
+    <section class="manual">
+      <h2>Manual de instrucciones</h2>
+      <details>
+        <summary>1. Selecci&oacute;n del nicho ecogeogr&aacute;fico</summary>
+        <div class="manual-body">
+          <p>
+            En la barra lateral, utilice el men&uacute; desplegable
+            <b>&laquo;Selecciona un Nicho&raquo;</b> para elegir uno de los 27
+            nichos ecogeogr&aacute;ficos. La opci&oacute;n
+            <b>&laquo;Todos los nichos&raquo;</b> permite trabajar sobre el conjunto
+            completo sin un nicho de referencia.
+          </p>
+          <p>
+            Al cambiar de nicho, el mapa se centra autom&aacute;ticamente sobre las
+            regiones del mundo donde se distribuye y los filtros ambientales se
+            ajustan al rango caracter&iacute;stico del nicho seleccionado.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>2. Perfil del nicho seleccionado</summary>
+        <div class="manual-body">
+          <p>
+            El panel <b>&laquo;Perfil del Nicho Seleccionado&raquo;</b> muestra los
+            valores medios de las variables clim&aacute;ticas y ed&aacute;ficas m&aacute;s
+            relevantes (temperatura media, viento anual, presi&oacute;n de vapor,
+            radiaci&oacute;n solar, contenido de arcilla y latitud).
+          </p>
+          <p>
+            Debajo se indica el rango geogr&aacute;fico (latitud y longitud
+            m&iacute;nima y m&aacute;xima) ocupado por el nicho.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>3. Filtros por variables ambientales</summary>
+        <div class="manual-body">
+          <p>
+            En la secci&oacute;n <b>&laquo;Afinar por Variables Ambientales&raquo;</b>
+            puede modificar el rango (m&iacute;nimo y m&aacute;ximo) de cada variable
+            para precisar las condiciones de inter&eacute;s. Solo se mostrar&aacute;n en
+            el mapa los nichos cuyos rangos se intersectan con los valores
+            establecidos.
+          </p>
+          <p>
+            El bot&oacute;n <b>&laquo;Restablecer al nicho seleccionado&raquo;</b>
+            devuelve los filtros al rango caracter&iacute;stico del nicho actual.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>4. Mapa interactivo</summary>
+        <div class="manual-body">
+          <p>
+            En el mapa puede activar o desactivar dos capas:
+          </p>
+          <ul>
+            <li><b>Nichos:</b> pol&iacute;gonos que delimitan cada nicho. El
+                nicho seleccionado aparece resaltado en amarillo.</li>
+            <li><b>Accesiones:</b> puntos verdes que representan las accesiones de
+                germoplasma localizadas dentro de los nichos visibles.</li>
+          </ul>
+          <p>
+            Al pasar el cursor por un pol&iacute;gono o un punto se muestra
+            informaci&oacute;n contextual (nombre del nicho, n&uacute;mero de
+            accesi&oacute;n, especie y pa&iacute;s).
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>5. Tabla de accesiones</summary>
+        <div class="manual-body">
+          <p>
+            La secci&oacute;n <b>&laquo;Accesiones en los Nichos Filtrados&raquo;</b>
+            lista las accesiones contenidas en los nichos visibles, incluyendo
+            g&eacute;nero, especie, cultivo, pa&iacute;s de origen, coordenadas y
+            distancia ecogeogr&aacute;fica al centroide del nicho asignado.
+          </p>
+          <p>
+            Por rendimiento se muestran hasta 1000 filas en pantalla; utilice el
+            bot&oacute;n <b>&laquo;Descargar CSV&raquo;</b> para obtener el conjunto
+            completo de accesiones filtradas.
+          </p>
+        </div>
+      </details>
+
+      <details>
+        <summary>6. Comparativa de variables entre nichos</summary>
+        <div class="manual-body">
+          <p>
+            Cuando dos o m&aacute;s nichos pasan el filtro, se habilita la tabla
+            <b>&laquo;Comparativa de Variables entre Nichos Visibles&raquo;</b>, que
+            muestra el valor medio de cada variable y una barra proporcional para
+            comparar visualmente las diferencias relativas entre nichos.
+          </p>
+        </div>
+      </details>
+    </section>
+
+    <section class="section" style="padding:0.5rem 0.8rem;">
+      <h2 style="margin-bottom:0.4rem;">Mapa de Nichos</h2>
+      <div class="map-block">
+        <div id="map"></div>
+        <div class="legend-panel">
+          <div class="panel">
+            <div class="panel-title">Capas</div>
+            <label class="layer-row">
+              <input type="checkbox" id="toggleNiches" checked /> Nichos
+            </label>
+            <label class="layer-row">
+              <input type="checkbox" id="toggleAccessions" checked /> Accesiones
+            </label>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Leyenda</div>
+            <div class="legend-row">
+              <span class="swatch" style="background:#ffd700;"></span> Nicho seleccionado
+            </div>
+            <div class="legend-row">
+              <span class="swatch" style="background:rgba(180,180,180,0.4);"></span> Otros nichos
+            </div>
+            <div class="legend-row">
+              <span class="swatch swatch-dot" style="background:#2d8a4e;"></span> Accesiones
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Accesiones en los Nichos Filtrados</h2>
+      <div class="summary-bar" id="summaryBar"></div>
+      <div id="accTablesWrap"></div>
+      <button id="downloadCsv" class="btn" style="margin-top:0.7rem;">Descargar CSV</button>
+    </section>
+
+    <section class="section">
+      <h2>Comparativa de Variables entre Nichos Visibles</h2>
+      <div id="compTableWrap"></div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <b>PhaseoluSearch</b> &mdash; Caracterizaci&oacute;n ecogeogr&aacute;fica del frijol Lima (<i>Phaseolus lunatus L.</i>)<br>
+  Datos: ELC World Classification &middot; Pasaporte de accesiones &middot; Variables ambientales &middot; CAPFITOGEN3 (Parra-Quijano et al., 2024)
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+//=============================================================================
+// CONSTANTS & STATE
+//=============================================================================
+const SLIDER_VARS = ["bio_1","bio_11","vapr_annual","srad_4","wind_annual","s_clay","t_sand"];
+const ENV_VARS = ["bio_1","bio_11","tmin_6","tmean_11","vapr_10","vapr_annual",
+                  "wind_annual","srad_4","s_clay","t_clay","s_sand","t_sand"];
+
+const NICHE_COLORS = [
+  "#1b5e20","#2e7d32","#388e3c","#43a047","#4caf50","#66bb6a","#81c784","#a5d6a7","#c8e6c9",
+  "#0d47a1","#1565c0","#1976d2","#1e88e5","#2196f3","#42a5f5","#64b5f6","#90caf9","#bbdefb",
+  "#b71c1c","#c62828","#d32f2f","#e53935","#ef5350","#e57373","#ef9a9a","#ffab91","#ffccbc",
+];
+const HIGHLIGHT_FILL = "#ffd700";
+const OTHER_FILL = "rgba(180,180,180,0.35)";
+const BORDER_COLOR = "#000000";
+const BORDER_WIDTH = 1;
+const ACCESSION_COLOR = "#2d8a4e";
+
+const State = {
+  featuresByNiche: null,   // {DN: [feature, ...]}  built once, niches FC is dropped
+  stats: null,             // {nid: {var: {media,...}}}
+  accessions: null,        // [{ACCENUMB, ...}]
+  variables: null,         // {var: {desc, unit}}
+  niche_names: null,       // {id: name}
+  selectedNiche: 3,        // default: Tropico Humedo Arcilloso
+  sliderValues: {},        // {var: [min,max]}
+  globalRanges: {},        // {var: [min,max]}
+  showNiches: true,
+  showAccessions: true,
+};
+
+// Cap on niches rendered at once. Selected niche is always kept.
+const MAX_VISIBLE_NICHES = 1500;
+
+let map, accessionLayer, nicheRenderer;
+const nicheLayerCache = new Map();   // DN -> L.geoJSON layer (lazy)
+const visibleNicheLayers = new Set(); // DN's currently added to the map
+let currentMatching = [];
+
+//=============================================================================
+// LOAD DATA
+//=============================================================================
+async function loadAll() {
+  const setMsg = (m) => document.getElementById("loadingMsg").textContent = m;
+  setMsg("Cargando metadatos…");
+  const [variables, stats, names, accessions] = await Promise.all([
+    fetch("data/variables.json").then(r => r.json()),
+    fetch("data/niche_stats.json").then(r => r.json()),
+    fetch("data/niche_names.json").then(r => r.json()),
+    fetch("data/accessions.json").then(r => r.json()),
+  ]);
+  State.variables = variables;
+  State.stats = stats;
+  State.niche_names = names;
+  State.accessions = accessions;
+
+  setMsg("Cargando 44k polígonos de nichos…");
+  const niches = await fetch("data/niches.geojson").then(r => r.json());
+
+  // Index features by niche ID so filtering is O(matching) instead of O(44k),
+  // then drop the FeatureCollection wrapper so it can be GC'd.
+  setMsg("Indexando polígonos…");
+  const idx = Object.create(null);
+  for (const f of niches.features) {
+    const dn = f.properties && f.properties.DN;
+    if (dn == null) continue;
+    let arr = idx[dn];
+    if (!arr) { arr = []; idx[dn] = arr; }
+    arr.push(f);
+  }
+  State.featuresByNiche = idx;
+  niches.features.length = 0; // release the big array; feature objects stay alive in the index
+
+  // Compute global ranges for slider vars
+  for (const v of SLIDER_VARS) {
+    let lo = Infinity, hi = -Infinity;
+    for (const nid in stats) {
+      const s = stats[nid][v];
+      if (s) { if (s.minimo < lo) lo = s.minimo; if (s.maximo > hi) hi = s.maximo; }
+    }
+    State.globalRanges[v] = [lo, hi];
+  }
+
+  document.getElementById("loading").style.display = "none";
+}
+
+//=============================================================================
+// UI BUILD
+//=============================================================================
+function buildNicheSelect() {
+  const sel = document.getElementById("nicheSelect");
+  sel.innerHTML = '<option value="all">Todos los nichos</option>';
+  const ids = Object.keys(State.niche_names).map(Number).sort((a,b) => a-b);
+  for (const id of ids) {
+    const opt = document.createElement("option");
+    opt.value = String(id);
+    opt.textContent = `N${id} - ${State.niche_names[id]}`;
+    sel.appendChild(opt);
+  }
+  sel.value = String(State.selectedNiche);
+  sel.addEventListener("change", () => {
+    const v = sel.value;
+    State.selectedNiche = v === "all" ? null : Number(v);
+    resetSlidersToSelection();
+    refreshAll();
+  });
+}
+
+function buildSliders() {
+  const wrap = document.getElementById("sliders");
+  wrap.innerHTML = "";
+  for (const v of SLIDER_VARS) {
+    const info = State.variables[v] || {desc: v, unit: ""};
+    const [gmin, gmax] = State.globalRanges[v];
+    const [cmin, cmax] = State.sliderValues[v] || [gmin, gmax];
+    const step = v.startsWith("bio_") || v.startsWith("tmin") || v.startsWith("tmean") ? 0.1 : 0.01;
+    const dp = step < 0.1 ? 2 : 1;
+
+    const row = document.createElement("div");
+    row.className = "slider-row";
+    row.innerHTML = `
+      <label>${info.desc} ${info.unit ? "(" + info.unit + ")" : ""}</label>
+      <div class="range-inputs">
+        <input type="number" id="lo_${v}" step="${step}" min="${gmin}" max="${gmax}" value="${cmin.toFixed(dp)}" />
+        <span style="font-size:0.8rem;color:#666;">a</span>
+        <input type="number" id="hi_${v}" step="${step}" min="${gmin}" max="${gmax}" value="${cmax.toFixed(dp)}" />
+      </div>
+      <div class="range-line">
+        <span>Global: ${gmin.toFixed(dp)}</span>
+        <span>${gmax.toFixed(dp)}</span>
+      </div>`;
+    wrap.appendChild(row);
+    State.sliderValues[v] = [cmin, cmax];
+
+    const onChange = () => {
+      const lo = parseFloat(document.getElementById(`lo_${v}`).value);
+      const hi = parseFloat(document.getElementById(`hi_${v}`).value);
+      if (isFinite(lo) && isFinite(hi) && lo <= hi) {
+        State.sliderValues[v] = [lo, hi];
+        refreshAll();
+      }
+    };
+    document.getElementById(`lo_${v}`).addEventListener("change", onChange);
+    document.getElementById(`hi_${v}`).addEventListener("change", onChange);
+  }
+}
+
+function resetSlidersToSelection() {
+  for (const v of SLIDER_VARS) {
+    const [gmin, gmax] = State.globalRanges[v];
+    if (State.selectedNiche == null) {
+      State.sliderValues[v] = [gmin, gmax];
+    } else {
+      const s = State.stats[State.selectedNiche][v];
+      const cmin = Math.max(gmin, Math.min(s.minimo, s.maximo));
+      const cmax = Math.min(gmax, Math.max(s.minimo, s.maximo));
+      State.sliderValues[v] = cmin < cmax ? [cmin, cmax] : [gmin, gmax];
+    }
+  }
+  buildSliders();
+}
+
+function setupLayerToggles() {
+  document.getElementById("toggleNiches").addEventListener("change", (e) => {
+    State.showNiches = e.target.checked;
+    refreshMap();
+  });
+  document.getElementById("toggleAccessions").addEventListener("change", (e) => {
+    State.showAccessions = e.target.checked;
+    refreshMap();
+  });
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    resetSlidersToSelection();
+    refreshAll();
+  });
+  document.getElementById("downloadCsv").addEventListener("click", downloadCsv);
+}
+
+//=============================================================================
+// FILTERING
+//=============================================================================
+function matchingNiches() {
+  const ids = Object.keys(State.stats).map(Number);
+  const out = [];
+  for (const nid of ids) {
+    let ok = true;
+    for (const v of SLIDER_VARS) {
+      const [smin, smax] = State.sliderValues[v];
+      const s = State.stats[nid][v];
+      if (!s || !isFinite(s.minimo) || !isFinite(s.maximo)) continue;
+      if (s.maximo < smin || smax < s.minimo) { ok = false; break; }
+    }
+    if (ok) out.push(nid);
+  }
+  if (out.length === 0) {
+    return State.selectedNiche != null ? [State.selectedNiche] : ids;
+  }
+  // Always keep selected niche in the set
+  if (State.selectedNiche != null && !out.includes(State.selectedNiche)) {
+    out.push(State.selectedNiche);
+  }
+  out.sort((a,b) => a-b);
+  return out;
+}
+
+function nicheColor(nid) { return NICHE_COLORS[(nid - 1) % NICHE_COLORS.length]; }
+
+//=============================================================================
+// MAP
+//=============================================================================
+function initMap() {
+  map = L.map("map", {
+    preferCanvas: true,
+    worldCopyJump: true,
+  }).setView([20, 0], 2);
+
+  // One shared canvas renderer for every overlay — avoids spawning a new
+  // canvas pane per layer and keeps GPU/CPU memory bounded.
+  nicheRenderer = L.canvas({ padding: 0.1 });
+
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    attribution: '&copy; OpenStreetMap, &copy; CARTO',
+    subdomains: "abcd",
+    maxZoom: 19,
+  }).addTo(map);
+
+  // Re-evaluate which niche polygons need to be on the map whenever the
+  // viewport changes — niches whose bbox is off-screen are removed.
+  map.on("moveend", () => {
+    if (State.showNiches) syncNicheLayers();
+  });
+}
+
+function styleForNiche(dn) {
+  const isSel = dn === State.selectedNiche;
+  return {
+    color: BORDER_COLOR,
+    weight: BORDER_WIDTH,
+    fillColor: isSel ? HIGHLIGHT_FILL : OTHER_FILL,
+    fillOpacity: isSel ? 0.7 : 1.0,
+  };
+}
+
+function getNicheLayer(dn) {
+  let layer = nicheLayerCache.get(dn);
+  if (layer) return layer;
+  const feats = State.featuresByNiche[dn];
+  if (!feats || !feats.length) return null;
+  layer = L.geoJSON({ type: "FeatureCollection", features: feats }, {
+    renderer: nicheRenderer,
+    style: () => styleForNiche(dn),
+    onEachFeature: (f, l) => {
+      const p = f.properties;
+      const niceName = State.niche_names[p.DN] || p.name || "";
+      l.bindTooltip(
+        `<div class="tip-box"><b>${niceName}</b>
+         <div class="sub">Nicho N${p.DN}</div></div>`,
+        { sticky: true, opacity: 1, direction: "top" }
+      );
+    }
+  });
+  nicheLayerCache.set(dn, layer);
+  return layer;
+}
+
+function showNicheLayer(dn) {
+  if (visibleNicheLayers.has(dn)) return;
+  const layer = getNicheLayer(dn);
+  if (!layer) return;
+  layer.addTo(map);
+  visibleNicheLayers.add(dn);
+}
+
+function hideNicheLayer(dn) {
+  if (!visibleNicheLayers.has(dn)) return;
+  const layer = nicheLayerCache.get(dn);
+  if (layer) map.removeLayer(layer);
+  visibleNicheLayers.delete(dn);
+}
+
+function nicheIntersectsBounds(dn, bounds) {
+  const s = State.stats[dn];
+  if (!s || !s.LATITUD || !s.LONGITUD) return true;
+  const sw = bounds.getSouthWest(), ne = bounds.getNorthEast();
+  if (s.LATITUD.maximo < sw.lat || s.LATITUD.minimo > ne.lat) return false;
+  if (s.LONGITUD.maximo < sw.lng || s.LONGITUD.minimo > ne.lng) return false;
+  return true;
+}
+
+// Show only niches that (a) are in the current filter, (b) intersect the
+// viewport, and (c) fit under the visible-niche cap. Diffs add/remove instead
+// of rebuilding layers so memory churn stays low.
+function syncNicheLayers() {
+  if (!State.showNiches) {
+    for (const dn of Array.from(visibleNicheLayers)) hideNicheLayer(dn);
+    return;
+  }
+  const bounds = map.getBounds();
+  let wanted = currentMatching.filter(dn =>
+    dn === State.selectedNiche || nicheIntersectsBounds(dn, bounds)
+  );
+  if (wanted.length > MAX_VISIBLE_NICHES) {
+    // Keep the selected niche first, then truncate the tail.
+    wanted.sort((a, b) =>
+      (a === State.selectedNiche ? -1 : 0) - (b === State.selectedNiche ? -1 : 0)
+    );
+    wanted = wanted.slice(0, MAX_VISIBLE_NICHES);
+  }
+  const wantedSet = new Set(wanted);
+
+  for (const dn of Array.from(visibleNicheLayers)) {
+    if (!wantedSet.has(dn)) hideNicheLayer(dn);
+  }
+  for (const dn of wanted) {
+    if (visibleNicheLayers.has(dn)) {
+      // Re-apply style — selectedNiche may have changed.
+      const layer = nicheLayerCache.get(dn);
+      if (layer) layer.setStyle(styleForNiche(dn));
+    } else {
+      showNicheLayer(dn);
+    }
+  }
+}
+
+function refreshMap() {
+  currentMatching = matchingNiches();
+  const matchingSet = new Set(currentMatching);
+
+  // Accession layer is small and changes frequently with filters — rebuilding it
+  // every refresh is fine. Niche polygons are handled by syncNicheLayers().
+  if (accessionLayer) { map.removeLayer(accessionLayer); accessionLayer = null; }
+
+  if (State.showAccessions) {
+    const accs = State.accessions.filter(a => matchingSet.has(a.ELC_asignado));
+    accessionLayer = L.layerGroup();
+    for (const a of accs) {
+      if (a.DECLATITUDE == null || a.DECLONGITUDE == null) continue;
+      const cm = L.circleMarker([a.DECLATITUDE, a.DECLONGITUDE], {
+        radius: 4, weight: 1,
+        color: ACCESSION_COLOR, fillColor: ACCESSION_COLOR, fillOpacity: 0.85,
+        renderer: nicheRenderer,
+      });
+      cm.bindTooltip(
+        `<div class="tip-box"><b>${a.ACCENUMB || ""}</b>
+         <div class="sub">Nicho N${a.ELC_asignado} &middot; ${State.niche_names[a.ELC_asignado] || ""}</div>
+         <div class="sub"><i>Phaseolus ${a.SPECIES || ""}</i></div>
+         <div class="sub">${a.NAMECTY || ""}</div></div>`,
+        { sticky: true, opacity: 1, direction: "top" }
+      );
+      accessionLayer.addLayer(cm);
+    }
+    accessionLayer.addTo(map);
+  }
+
+  // fitBounds will trigger moveend → syncNicheLayers; also call directly in case
+  // the bounds don't actually change (idempotent).
+  fitViewToNiches(currentMatching);
+  syncNicheLayers();
+}
+
+function fitViewToNiches(ids) {
+  if (!ids || ids.length === 0) return;
+  let south = Infinity, north = -Infinity, west = Infinity, east = -Infinity;
+  for (const nid of ids) {
+    const s = State.stats[nid];
+    if (!s) continue;
+    south = Math.min(south, s.LATITUD.minimo);
+    north = Math.max(north, s.LATITUD.maximo);
+    west = Math.min(west, s.LONGITUD.minimo);
+    east = Math.max(east, s.LONGITUD.maximo);
+  }
+  if (isFinite(south) && isFinite(north)) {
+    map.fitBounds([[south, west], [north, east]], { padding: [30, 30], maxZoom: 6 });
+  }
+}
+
+//=============================================================================
+// STATS CARD
+//=============================================================================
+function refreshStats() {
+  const card = document.getElementById("statsCard");
+  const rl = document.getElementById("rangeLine");
+  if (State.selectedNiche == null) {
+    card.innerHTML = '<div style="grid-column:1/-1;font-size:0.85rem;color:#666;">' +
+      'Modo: <b>Todos los nichos</b></div>';
+    rl.textContent = "";
+    return;
+  }
+  const s = State.stats[State.selectedNiche];
+  const metric = (lbl, val) => `<div class="metric"><div class="label">${lbl}</div>
+    <div class="value">${val}</div></div>`;
+  card.innerHTML = [
+    metric("Temp. Media", s.bio_1.media.toFixed(1) + " C"),
+    metric("Viento", s.wind_annual.media.toFixed(2) + " m/s"),
+    metric("Pres. Vapor", s.vapr_annual.media.toFixed(2) + " kPa"),
+    metric("Arcilla Sub.", s.s_clay.media.toFixed(1) + "%"),
+    metric("Rad. Solar", s.srad_4.media.toFixed(0)),
+    metric("Latitud", s.LATITUD.media.toFixed(1)),
+  ].join("");
+  rl.innerHTML = `<b>Rango:</b> ${s.LATITUD.minimo.toFixed(1)} a ${s.LATITUD.maximo.toFixed(1)} Lat |
+                  ${s.LONGITUD.minimo.toFixed(1)} a ${s.LONGITUD.maximo.toFixed(1)} Lon`;
+}
+
+//=============================================================================
+// ACCESSIONS TABLE
+//=============================================================================
+function filteredAccessions() {
+  const matching = matchingNiches();
+  const ms = new Set(matching);
+  // Filter by niche assignment AND by lat/lon bounding box of any matching niche
+  const bboxes = matching.map(nid => {
+    const s = State.stats[nid];
+    return { latMin: s.LATITUD.minimo, latMax: s.LATITUD.maximo,
+             lonMin: s.LONGITUD.minimo, lonMax: s.LONGITUD.maximo };
+  });
+  const accs = State.accessions.filter(a => {
+    if (!ms.has(a.ELC_asignado)) return false;
+    if (a.DECLATITUDE == null || a.DECLONGITUDE == null) return false;
+    return bboxes.some(b =>
+      a.DECLATITUDE >= b.latMin && a.DECLATITUDE <= b.latMax &&
+      a.DECLONGITUDE >= b.lonMin && a.DECLONGITUDE <= b.lonMax
+    );
+  });
+  accs.sort((a, b) =>
+    (a.ELC_asignado - b.ELC_asignado) ||
+    ((a.Distancia_ELC ?? Infinity) - (b.Distancia_ELC ?? Infinity))
+  );
+  return accs;
+}
+
+function refreshAccessionsTable() {
+  const accs = filteredAccessions();
+  const speciesSet = new Set(accs.map(a => a.SPECIES).filter(Boolean));
+  const nicheSet = new Set(accs.map(a => a.ELC_asignado));
+
+  document.getElementById("statAccTotal").textContent = accs.length.toLocaleString();
+  document.getElementById("statNicheCount").textContent = nicheSet.size;
+  document.getElementById("statSpecies").textContent = speciesSet.size;
+
+  const wrap = document.getElementById("accTableWrap");
+  if (accs.length === 0) {
+    wrap.innerHTML = '<div class="empty">No hay accesiones que coincidan con los filtros actuales. ' +
+      'Ajuste los rangos para ampliar la búsqueda.</div>';
+    return;
+  }
+  const cols = [
+    {k: "ACCENUMB", h: "Accesion"},
+    {k: "GENUS",    h: "Genero", fmt: () => "Phaseolus"},
+    {k: "SPECIES",  h: "Especie"},
+    {k: "CROPNAME", h: "Cultivo"},
+    {k: "ORIGCTY",  h: "Pais Orig."},
+    {k: "NAMECTY",  h: "Pais"},
+    {k: "ADM1",     h: "Region"},
+    {k: "DECLATITUDE", h: "Latitud",   fmt: v => v == null ? "" : v.toFixed(4), num: true},
+    {k: "DECLONGITUDE", h: "Longitud", fmt: v => v == null ? "" : v.toFixed(4), num: true},
+    {k: "ELC_asignado", h: "Nicho", num: true},
+    {k: "Distancia_ELC", h: "Dist. ELC", fmt: v => v == null ? "" : v.toFixed(4), num: true},
+  ];
+  let html = '<div class="table-wrap"><table><thead><tr>';
+  for (const c of cols) html += `<th>${c.h}</th>`;
+  html += "</tr></thead><tbody>";
+  // Cap render to first 1000 rows for performance; CSV gets the full set
+  const view = accs.slice(0, 1000);
+  for (const a of view) {
+    html += "<tr>";
+    for (const c of cols) {
+      const v = a[c.k];
+      const cell = c.fmt ? c.fmt(v) : (v == null ? "" : String(v));
+      html += `<td class="${c.num ? 'num-cell' : ''}">${cell}</td>`;
+    }
+    html += "</tr>";
+  }
+  html += "</tbody></table></div>";
+  if (accs.length > 1000) {
+    html += `<p style="font-size:0.78rem;color:#666;margin:0.4rem 0 0;">
+      Mostrando 1000 de ${accs.length.toLocaleString()} filas. Descargue el CSV para el conjunto completo.</p>`;
+  }
+  wrap.innerHTML = html;
+}
+
+function downloadCsv() {
+  const accs = filteredAccessions();
+  if (accs.length === 0) { alert("No hay accesiones para descargar."); return; }
+  const cols = ["ACCENUMB","GENUS","SPECIES","CROPNAME","ORIGCTY","NAMECTY","ADM1",
+                "DECLATITUDE","DECLONGITUDE","ELC_asignado","Distancia_ELC"];
+  const esc = (s) => {
+    if (s == null) return "";
+    s = String(s);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+  let csv = cols.join(",") + "\n";
+  for (const a of accs) {
+    csv += cols.map(c => esc(c === "GENUS" ? "Phaseolus" : a[c])).join(",") + "\n";
+  }
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const nids = matchingNiches().join("-");
+  a.href = url; a.download = `accesiones_nichos_${nids}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+//=============================================================================
+// COMPARISON TABLE
+//=============================================================================
+function refreshComparison() {
+  const wrap = document.getElementById("compTableWrap");
+  const matching = matchingNiches();
+  if (matching.length < 2) {
+    wrap.innerHTML = '<div class="empty">Seleccione m&aacute;s nichos (ajuste los rangos) para ver la comparativa.</div>';
+    return;
+  }
+  // Build matrix
+  const rows = matching.map(nid => {
+    const s = State.stats[nid];
+    const row = { nicheLabel: `N${nid} - ${State.niche_names[nid]}` };
+    for (const v of SLIDER_VARS) row[v] = s[v].media;
+    return row;
+  });
+  // For each col compute min/max for bar scaling
+  const ranges = {};
+  for (const v of SLIDER_VARS) {
+    let lo = Infinity, hi = -Infinity;
+    for (const r of rows) { if (r[v] < lo) lo = r[v]; if (r[v] > hi) hi = r[v]; }
+    ranges[v] = [lo, hi === lo ? lo + 1 : hi];
+  }
+
+  let html = '<div class="table-wrap"><table><thead><tr><th>Nicho</th>';
+  for (const v of SLIDER_VARS) {
+    const info = State.variables[v] || {desc: v, unit: ""};
+    html += `<th>${info.desc} ${info.unit ? "(" + info.unit + ")" : ""}</th>`;
+  }
+  html += "</tr></thead><tbody>";
+  for (const r of rows) {
+    html += `<tr><td>${r.nicheLabel}</td>`;
+    for (const v of SLIDER_VARS) {
+      const [lo, hi] = ranges[v];
+      const pct = ((r[v] - lo) / (hi - lo)) * 100;
+      html += `<td><div class="comp-cell">
+        <div class="comp-bar" style="flex:1;"><div style="width:${pct.toFixed(0)}%;"></div></div>
+        <span class="v">${r[v].toFixed(1)}</span></div></td>`;
+    }
+    html += "</tr>";
+  }
+  html += "</tbody></table></div>";
+  wrap.innerHTML = html;
+}
+
+//=============================================================================
+// MASTER REFRESH
+//=============================================================================
+function refreshAll() {
+  refreshStats();
+  refreshMap();
+  refreshAccessionsTable();
+  refreshComparison();
+}
+
+//=============================================================================
+// BOOT
+//=============================================================================
+(async function main() {
+  try {
+    await loadAll();
+    initMap();
+    buildNicheSelect();
+    resetSlidersToSelection();
+    setupLayerToggles();
+    refreshAll();
+  } catch (err) {
+    console.error(err);
+    document.getElementById("loadingMsg").innerHTML =
+      `<p style="color:#b71c1c;">Error cargando los datos:<br>${err.message}</p>
+       <p style="font-size:0.8rem;color:#666;margin-top:1rem;">
+       Aseg&uacute;rese de servir este archivo con un servidor HTTP local
+       (ej. <code>python -m http.server</code> dentro de <code>web/</code>).</p>`;
+  }
+})();
+</script>
+</body>
+</html>
