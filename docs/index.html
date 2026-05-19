@@ -304,8 +304,8 @@ footer b { color: var(--green-900); }
 
     <h4>Afinar por Variables Ambientales</h4>
     <p style="font-size:0.75rem;color:#666;margin:0 0 0.5rem;">
-      Ajuste los rangos para precisar las condiciones deseadas. Los nichos cuyo
-      rango contenga el filtro se mostrar&aacute;n en el mapa.
+      Ajuste los rangos para precisar las condiciones deseadas. Los nichos cuya
+      media se encuentre dentro del rango se mostrar&aacute;n en el mapa.
     </p>
     <div id="sliders"></div>
     <button id="resetBtn" class="btn btn-secondary" style="margin-top:0.4rem;">
@@ -872,9 +872,9 @@ function matchingNiches() {
       if (!State.activeFilterVars.has(v)) continue;
       const [smin, smax] = State.sliderValues[v];
       const s = State.stats[nid][v];
-      if (!s || !isFinite(s.minimo) || !isFinite(s.maximo)) continue;
-      // Slider range must be contained within (or equal to) niche range
-      if (smin < s.minimo || smax > s.maximo) { ok = false; break; }
+      if (!s || !isFinite(s.media)) continue;
+      // Niche mean must fall within the slider range
+      if (s.media < smin || s.media > smax) { ok = false; break; }
     }
     if (ok) out.push(nid);
   }
