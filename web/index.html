@@ -272,33 +272,48 @@ footer b { color: var(--green-900); }
 
     <div class="divider"></div>
 
+    <h4>Cargar Accesiones</h4>
+    <p style="font-size:0.75rem;color:#666;margin:0 0 0.4rem;">
+      Suba un archivo CSV con las coordenadas de sus accesiones
+      (columnas: ACCENUMB, GENUS, SPECIES, CROPNAME, ORIGCTY, NAMECTY,
+      ADM1, DECLATITUDE, DECLONGITUDE). El nicho se asignara
+      automaticamente segun la ubicacion geografica.
+    </p>
+    <div style="margin-bottom:0.4rem; display:flex; gap:0.3rem; flex-wrap:wrap;">
+      <a href="data/plantilla_accesiones.csv" download
+         class="btn btn-secondary" style="font-size:0.75rem;padding:0.25rem 0.5rem;text-decoration:none;">
+        Plantilla
+      </a>
+      <a href="data/accesiones_completas.csv" download
+         class="btn btn-secondary" style="font-size:0.75rem;padding:0.25rem 0.5rem;text-decoration:none;">
+        Dataset 520 acc.
+      </a>
+    </div>
+    <label for="csvUpload" id="csvUploadLabel" class="btn" style="display:inline-block;font-size:0.82rem;
+       padding:0.4rem 0.8rem;cursor:pointer;margin-bottom:0.3rem;text-align:center;
+       width:100%;box-sizing:border-box;">
+      Seleccionar archivo CSV
+    </label>
+    <input type="file" id="csvUpload" accept=".csv"
+           style="opacity:0;position:absolute;width:0;height:0;overflow:hidden;" />
+    <p id="uploadMsg" style="font-size:0.72rem;color:#666;margin:0.2rem 0 0;">
+      No se ha cargado ningun archivo.
+    </p>
+
+    <div class="divider"></div>
+
     <h4>Afinar por Variables Ambientales</h4>
     <p style="font-size:0.75rem;color:#666;margin:0 0 0.5rem;">
       Ajuste los rangos para precisar las condiciones deseadas. Los nichos cuyo
-      rango se intersecta con el filtro se mostrar&aacute;n en el mapa.
+      rango contenga el filtro se mostrar&aacute;n en el mapa.
     </p>
     <div id="sliders"></div>
     <button id="resetBtn" class="btn btn-secondary" style="margin-top:0.4rem;">
       Restablecer al nicho seleccionado
     </button>
-
-    <div class="divider"></div>
-
-    <h4>Cargar Accesiones</h4>
-    <p style="font-size:0.75rem;color:#666;margin:0 0 0.4rem;">
-      Suba un archivo CSV con las coordenadas de sus accesiones
-      (columnas: ACCENUMB, SPECIES, CROPNAME, ORIGCTY, NAMECTY,
-      ADM1, DECLATITUDE, DECLONGITUDE). El nicho se asignara
-      automaticamente segun la ubicacion geografica.
-    </p>
-    <a href="data/plantilla_accesiones.csv" download
-       class="btn btn-secondary" style="display:inline-block;font-size:0.78rem;
-       padding:0.3rem 0.7rem;margin-bottom:0.5rem;text-decoration:none;">
-      Descargar plantilla CSV
-    </a>
-    <input type="file" id="csvUpload" accept=".csv"
-           style="width:100%;margin-top:0.3rem;" />
-    <p id="uploadMsg" style="font-size:0.72rem;color:#666;margin:0.3rem 0 0;"></p>
+    <button id="applyBtn" class="btn" style="margin-top:0.4rem;width:100%;">
+      Aplicar filtros
+    </button>
 
     <div class="divider"></div>
 
@@ -356,7 +371,7 @@ footer b { color: var(--green-900); }
             En la secci&oacute;n <b>&laquo;Afinar por Variables Ambientales&raquo;</b>
             puede modificar el rango (m&iacute;nimo y m&aacute;ximo) de cada variable
             para precisar las condiciones de inter&eacute;s. Solo se mostrar&aacute;n en
-            el mapa los nichos cuyos rangos se intersectan con los valores
+            el mapa solo los nichos cuyos rangos contienen los valores
             establecidos.
           </p>
           <p>
@@ -387,18 +402,25 @@ footer b { color: var(--green-900); }
       </details>
 
       <details>
-        <summary>5. Tabla de accesiones</summary>
+        <summary>5. Carga y tabla de accesiones</summary>
         <div class="manual-body">
           <p>
-            La secci&oacute;n <b>&laquo;Accesiones en los Nichos Filtrados&raquo;</b>
-            lista las accesiones contenidas en los nichos visibles, incluyendo
-            g&eacute;nero, especie, cultivo, pa&iacute;s de origen, coordenadas y
-            distancia ecogeogr&aacute;fica al centroide del nicho asignado.
+            En la barra lateral, utilice la sección
+            <b>&laquo;Cargar Accesiones&raquo;</b> para subir un archivo CSV
+            con sus accesiones. Descargue la plantilla para conocer el formato
+            requerido. El nicho se asigna automáticamente según las coordenadas
+            geográficas de cada accesión.
           </p>
           <p>
-            Por rendimiento se muestran hasta 1000 filas en pantalla; utilice el
-            bot&oacute;n <b>&laquo;Descargar CSV&raquo;</b> para obtener el conjunto
-            completo de accesiones filtradas.
+            La sección <b>&laquo;Accesiones en los Nichos Filtrados&raquo;</b>
+            lista las accesiones contenidas en los nichos visibles. Al
+            seleccionar un nicho específico, las accesiones se separan en dos
+            tablas: el nicho seleccionado y el resto de nichos en el filtro.
+          </p>
+          <p>
+            Por rendimiento se muestran hasta 1000 filas por tabla; utilice el
+            botón <b>&laquo;Descargar CSV&raquo;</b> para obtener el conjunto
+            completo.
           </p>
         </div>
       </details>
@@ -476,25 +498,29 @@ const ENV_VARS = ["bio_1","bio_11","tmin_6","tmean_11","vapr_10","vapr_annual",
                   "wind_annual","srad_4","s_clay","t_clay","s_sand","t_sand"];
 
 const NICHE_COLORS = [
-  "#1b5e20","#2e7d32","#388e3c","#43a047","#4caf50","#66bb6a","#81c784","#a5d6a7","#c8e6c9",
-  "#0d47a1","#1565c0","#1976d2","#1e88e5","#2196f3","#42a5f5","#64b5f6","#90caf9","#bbdefb",
-  "#b71c1c","#c62828","#d32f2f","#e53935","#ef5350","#e57373","#ef9a9a","#ffab91","#ffccbc",
+  "#1b9e77","#d95f02","#7570b3","#e7298a","#66a61e",
+  "#e6ab02","#a6761d","#666666","#1f78b4","#b2df8a",
+  "#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00",
+  "#cab2d6","#6a3d9a","#ffff99","#b15928","#8dd3c7",
+  "#ffffb3","#bebada","#fb8072","#80b1d3","#fdb462",
+  "#b3de69","#fccde5",
 ];
 const HIGHLIGHT_FILL = "#ffd700";
 const OTHER_FILL = "rgba(180,180,180,0.35)";
 const BORDER_COLOR = "#000000";
 const BORDER_WIDTH = 1;
-const ACCESSION_COLOR = "#2d8a4e";
 
 const State = {
   featuresByNiche: null,   // {DN: [feature, ...]}  built once, niches FC is dropped
   stats: null,             // {nid: {var: {media,...}}}
-  accessions: null,        // [{ACCENUMB, ...}]
+  accessions: [],          // uploaded accessions with ELC_asignado, Distancia_ELC computed
   variables: null,         // {var: {desc, unit}}
   niche_names: null,       // {id: name}
-  selectedNiche: 3,        // default: Tropico Humedo Arcilloso
+  nicheCentroids: null,    // {id: {lat, lng}} for distance computation
+  selectedNiche: 3,        // default: Subtropical cálido estacional subhumedo franco-arcilloso
   sliderValues: {},        // {var: [min,max]}
   globalRanges: {},        // {var: [min,max]}
+  activeFilterVars: new Set(SLIDER_VARS),  // which variables participate in filtering
   showNiches: true,
   showAccessions: true,
 };
@@ -513,18 +539,27 @@ let currentMatching = [];
 async function loadAll() {
   const setMsg = (m) => document.getElementById("loadingMsg").textContent = m;
   setMsg("Cargando metadatos…");
-  const [variables, stats, names, accessions] = await Promise.all([
+  const [variables, stats, names] = await Promise.all([
     fetch("data/variables.json").then(r => r.json()),
     fetch("data/niche_stats.json").then(r => r.json()),
     fetch("data/niche_names.json").then(r => r.json()),
-    fetch("data/accessions.json").then(r => r.json()),
   ]);
   State.variables = variables;
   State.stats = stats;
   State.niche_names = names;
-  State.accessions = accessions;
 
-  setMsg("Cargando 44k polígonos de nichos…");
+  // Pre-compute niche centroids from stats for distance
+  State.nicheCentroids = {};
+  for (const nid in stats) {
+    const s = stats[nid];
+    if (s.LATITUD && s.LONGITUD) {
+      State.nicheCentroids[nid] = {
+        lat: s.LATITUD.media, lng: s.LONGITUD.media
+      };
+    }
+  }
+
+  setMsg("Cargando polígonos de nichos…");
   const niches = await fetch("data/niches.geojson").then(r => r.json());
 
   // Index features by niche ID so filtering is O(matching) instead of O(44k),
@@ -579,17 +614,44 @@ function buildNicheSelect() {
 function buildSliders() {
   const wrap = document.getElementById("sliders");
   wrap.innerHTML = "";
+
+  // Toggle all / none row
+  const toggleRow = document.createElement("div");
+  toggleRow.style.cssText = "display:flex;gap:0.5rem;margin-bottom:0.4rem;font-size:0.72rem;";
+  toggleRow.innerHTML = `
+    <a href="#" id="toggleAllVars" style="color:#1a5632;text-decoration:none;font-weight:700;">Todas</a>
+    <span style="color:#ccc;">|</span>
+    <a href="#" id="toggleNoneVars" style="color:#1a5632;text-decoration:none;font-weight:700;">Ninguna</a>
+  `;
+  wrap.appendChild(toggleRow);
+
+  document.getElementById("toggleAllVars").addEventListener("click", (e) => {
+    e.preventDefault();
+    State.activeFilterVars = new Set(SLIDER_VARS);
+    document.querySelectorAll(".filter-var-chk").forEach(cb => cb.checked = true);
+  });
+  document.getElementById("toggleNoneVars").addEventListener("click", (e) => {
+    e.preventDefault();
+    State.activeFilterVars = new Set();
+    document.querySelectorAll(".filter-var-chk").forEach(cb => cb.checked = false);
+  });
+
   for (const v of SLIDER_VARS) {
     const info = State.variables[v] || {desc: v, unit: ""};
     const [gmin, gmax] = State.globalRanges[v];
     const [cmin, cmax] = State.sliderValues[v] || [gmin, gmax];
     const step = v.startsWith("bio_") || v.startsWith("tmin") || v.startsWith("tmean") ? 0.1 : 0.01;
     const dp = step < 0.1 ? 2 : 1;
+    const checked = State.activeFilterVars.has(v) ? "checked" : "";
 
     const row = document.createElement("div");
     row.className = "slider-row";
     row.innerHTML = `
-      <label>${info.desc} ${info.unit ? "(" + info.unit + ")" : ""}</label>
+      <label style="display:flex;align-items:center;gap:0.35rem;">
+        <input type="checkbox" class="filter-var-chk" id="chk_${v}" ${checked}
+               style="accent-color:#1a5632;" />
+        ${info.desc} ${info.unit ? "(" + info.unit + ")" : ""}
+      </label>
       <div class="range-inputs">
         <input type="number" id="lo_${v}" step="${step}" min="${gmin}" max="${gmax}" value="${cmin.toFixed(dp)}" />
         <span style="font-size:0.8rem;color:#666;">a</span>
@@ -607,15 +669,23 @@ function buildSliders() {
       const hi = parseFloat(document.getElementById(`hi_${v}`).value);
       if (isFinite(lo) && isFinite(hi) && lo <= hi) {
         State.sliderValues[v] = [lo, hi];
-        refreshAll();
       }
     };
     document.getElementById(`lo_${v}`).addEventListener("change", onChange);
     document.getElementById(`hi_${v}`).addEventListener("change", onChange);
+
+    document.getElementById(`chk_${v}`).addEventListener("change", (e) => {
+      if (e.target.checked) {
+        State.activeFilterVars.add(v);
+      } else {
+        State.activeFilterVars.delete(v);
+      }
+    });
   }
 }
 
 function resetSlidersToSelection() {
+  State.activeFilterVars = new Set(SLIDER_VARS);
   for (const v of SLIDER_VARS) {
     const [gmin, gmax] = State.globalRanges[v];
     if (State.selectedNiche == null) {
@@ -628,6 +698,21 @@ function resetSlidersToSelection() {
     }
   }
   buildSliders();
+}
+
+function readSliderValuesFromDOM() {
+  State.activeFilterVars = new Set();
+  for (const v of SLIDER_VARS) {
+    const lo = parseFloat(document.getElementById(`lo_${v}`)?.value);
+    const hi = parseFloat(document.getElementById(`hi_${v}`)?.value);
+    if (isFinite(lo) && isFinite(hi) && lo <= hi) {
+      State.sliderValues[v] = [lo, hi];
+    }
+    const chk = document.getElementById(`chk_${v}`);
+    if (chk && chk.checked) {
+      State.activeFilterVars.add(v);
+    }
+  }
 }
 
 function setupLayerToggles() {
@@ -643,7 +728,136 @@ function setupLayerToggles() {
     resetSlidersToSelection();
     refreshAll();
   });
+  document.getElementById("applyBtn").addEventListener("click", () => {
+    readSliderValuesFromDOM();
+    refreshAll();
+  });
   document.getElementById("downloadCsv").addEventListener("click", downloadCsv);
+  document.getElementById("csvUpload").addEventListener("change", handleCsvUpload);
+}
+
+//=============================================================================
+// CSV UPLOAD & SPATIAL NICHE ASSIGNMENT
+//=============================================================================
+function pointInPolygonRing(lng, lat, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const xi = ring[i][0], yi = ring[i][1];
+    const xj = ring[j][0], yj = ring[j][1];
+    const intersect = ((yi > lat) !== (yj > lat)) &&
+      (lng < (xj - xi) * (lat - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+function pointInGeometry(lng, lat, geom) {
+  if (!geom) return false;
+  if (geom.type === "Polygon") {
+    // Outer ring containment + NOT inside any hole
+    if (!pointInPolygonRing(lng, lat, geom.coordinates[0])) return false;
+    for (let h = 1; h < geom.coordinates.length; h++) {
+      if (pointInPolygonRing(lng, lat, geom.coordinates[h])) return false;
+    }
+    return true;
+  }
+  if (geom.type === "MultiPolygon") {
+    for (const poly of geom.coordinates) {
+      if (!pointInPolygonRing(lng, lat, poly[0])) continue;
+      let inHole = false;
+      for (let h = 1; h < poly.length; h++) {
+        if (pointInPolygonRing(lng, lat, poly[h])) { inHole = true; break; }
+      }
+      if (!inHole) return true;
+    }
+    return false;
+  }
+  return false;
+}
+
+function assignNicheToPoint(lat, lng) {
+  for (const nid in State.featuresByNiche) {
+    const feats = State.featuresByNiche[nid];
+    for (const f of feats) {
+      if (pointInGeometry(lng, lat, f.geometry)) {
+        return Number(nid);
+      }
+    }
+  }
+  return null; // no niche contains this point
+}
+
+function distanceToNicheCentroid(lat, lng, nid) {
+  const c = State.nicheCentroids[String(nid)];
+  if (!c) return null;
+  const dlat = lat - c.lat;
+  const dlng = (lng - c.lng) * Math.cos((lat + c.lat) / 2 * Math.PI / 180);
+  return Math.sqrt(dlat * dlat + dlng * dlng);
+}
+
+function parseCsvAndAssign(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(",").map(h => h.trim());
+  const idxLat = headers.indexOf("DECLATITUDE");
+  const idxLng = headers.indexOf("DECLONGITUDE");
+  if (idxLat === -1 || idxLng === -1) {
+    alert("El CSV debe contener las columnas DECLATITUDE y DECLONGITUDE.");
+    return [];
+  }
+
+  const accs = [];
+  for (let i = 1; i < lines.length; i++) {
+    const vals = lines[i].split(",").map(v => v.trim());
+    if (vals.length < headers.length) continue;
+    const lat = parseFloat(vals[idxLat]);
+    const lng = parseFloat(vals[idxLng]);
+    if (isNaN(lat) || isNaN(lng)) continue;
+
+    const obj = {};
+    for (let j = 0; j < headers.length; j++) {
+      obj[headers[j]] = vals[j];
+    }
+    obj.DECLATITUDE = lat;
+    obj.DECLONGITUDE = lng;
+    if (!obj.GENUS) obj.GENUS = "Phaseolus";
+    obj.ELC_asignado = assignNicheToPoint(lat, lng);
+    obj.Distancia_ELC = obj.ELC_asignado != null
+      ? distanceToNicheCentroid(lat, lng, obj.ELC_asignado)
+      : null;
+    accs.push(obj);
+  }
+  return accs;
+}
+
+function handleCsvUpload(e) {
+  const file = e.target.files[0];
+  const msg = document.getElementById("uploadMsg");
+  const label = document.getElementById("csvUploadLabel");
+  if (!file) return;
+
+  label.textContent = "Procesando...";
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const accs = parseCsvAndAssign(ev.target.result);
+      State.accessions = accs;
+      const assigned = accs.filter(a => a.ELC_asignado != null).length;
+      msg.textContent = `${accs.length} accesiones cargadas` +
+        (assigned < accs.length ? ` (${assigned} con nicho asignado)` : "") +
+        `. ${accs.filter(a => a.ELC_asignado == null).length} sin nicho.`;
+      msg.style.color = "#1a5632";
+      label.textContent = file.name;
+      label.style.background = "linear-gradient(135deg, #1a5632, #2d8a4e)";
+      refreshAll();
+    } catch (err) {
+      msg.textContent = "Error al procesar el archivo: " + err.message;
+      msg.style.color = "#b71c1c";
+      label.textContent = "Seleccionar archivo CSV";
+      label.style.background = "";
+    }
+  };
+  reader.readAsText(file);
 }
 
 //=============================================================================
@@ -655,10 +869,12 @@ function matchingNiches() {
   for (const nid of ids) {
     let ok = true;
     for (const v of SLIDER_VARS) {
+      if (!State.activeFilterVars.has(v)) continue;
       const [smin, smax] = State.sliderValues[v];
       const s = State.stats[nid][v];
       if (!s || !isFinite(s.minimo) || !isFinite(s.maximo)) continue;
-      if (s.maximo < smin || smax < s.minimo) { ok = false; break; }
+      // Slider range must be contained within (or equal to) niche range
+      if (smin < s.minimo || smax > s.maximo) { ok = false; break; }
     }
     if (ok) out.push(nid);
   }
@@ -794,25 +1010,25 @@ function syncNicheLayers() {
 
 function refreshMap() {
   currentMatching = matchingNiches();
-  const matchingSet = new Set(currentMatching);
 
-  // Accession layer is small and changes frequently with filters — rebuilding it
-  // every refresh is fine. Niche polygons are handled by syncNicheLayers().
+  // Accession layer: show ALL uploaded accessions, colored by niche
   if (accessionLayer) { map.removeLayer(accessionLayer); accessionLayer = null; }
 
-  if (State.showAccessions) {
-    const accs = State.accessions.filter(a => matchingSet.has(a.ELC_asignado));
+  if (State.showAccessions && State.accessions.length > 0) {
     accessionLayer = L.layerGroup();
-    for (const a of accs) {
+    for (const a of State.accessions) {
       if (a.DECLATITUDE == null || a.DECLONGITUDE == null) continue;
+      const nid = a.ELC_asignado;
+      const fillColor = nid != null ? nicheColor(nid) : "#888888";
       const cm = L.circleMarker([a.DECLATITUDE, a.DECLONGITUDE], {
         radius: 4, weight: 1,
-        color: ACCESSION_COLOR, fillColor: ACCESSION_COLOR, fillOpacity: 0.85,
+        color: fillColor, fillColor: fillColor, fillOpacity: 0.85,
         renderer: nicheRenderer,
       });
+      const nicheName = nid != null ? (State.niche_names[nid] || "") : "Sin nicho";
       cm.bindTooltip(
         `<div class="tip-box"><b>${a.ACCENUMB || ""}</b>
-         <div class="sub">Nicho N${a.ELC_asignado} &middot; ${State.niche_names[a.ELC_asignado] || ""}</div>
+         <div class="sub">${nid != null ? "Nicho N" + nid : "Sin nicho"} &middot; ${nicheName}</div>
          <div class="sub"><i>Phaseolus ${a.SPECIES || ""}</i></div>
          <div class="sub">${a.NAMECTY || ""}</div></div>`,
         { sticky: true, opacity: 1, direction: "top" }
@@ -822,8 +1038,6 @@ function refreshMap() {
     accessionLayer.addTo(map);
   }
 
-  // fitBounds will trigger moveend → syncNicheLayers; also call directly in case
-  // the bounds don't actually change (idempotent).
   fitViewToNiches(currentMatching);
   syncNicheLayers();
 }
@@ -884,7 +1098,7 @@ function filteredAccessions() {
              lonMin: s.LONGITUD.minimo, lonMax: s.LONGITUD.maximo };
   });
   const accs = State.accessions.filter(a => {
-    if (!ms.has(a.ELC_asignado)) return false;
+    if (a.ELC_asignado == null || !ms.has(a.ELC_asignado)) return false;
     if (a.DECLATITUDE == null || a.DECLONGITUDE == null) return false;
     return bboxes.some(b =>
       a.DECLATITUDE >= b.latMin && a.DECLATITUDE <= b.latMax &&
@@ -898,24 +1112,10 @@ function filteredAccessions() {
   return accs;
 }
 
-function refreshAccessionsTable() {
-  const accs = filteredAccessions();
-  const speciesSet = new Set(accs.map(a => a.SPECIES).filter(Boolean));
-  const nicheSet = new Set(accs.map(a => a.ELC_asignado));
-
-  document.getElementById("statAccTotal").textContent = accs.length.toLocaleString();
-  document.getElementById("statNicheCount").textContent = nicheSet.size;
-  document.getElementById("statSpecies").textContent = speciesSet.size;
-
-  const wrap = document.getElementById("accTableWrap");
-  if (accs.length === 0) {
-    wrap.innerHTML = '<div class="empty">No hay accesiones que coincidan con los filtros actuales. ' +
-      'Ajuste los rangos para ampliar la búsqueda.</div>';
-    return;
-  }
+function renderTable(accs, maxRows) {
   const cols = [
     {k: "ACCENUMB", h: "Accesion"},
-    {k: "GENUS",    h: "Genero", fmt: () => "Phaseolus"},
+    {k: "GENUS",    h: "Genero"},
     {k: "SPECIES",  h: "Especie"},
     {k: "CROPNAME", h: "Cultivo"},
     {k: "ORIGCTY",  h: "Pais Orig."},
@@ -924,13 +1124,12 @@ function refreshAccessionsTable() {
     {k: "DECLATITUDE", h: "Latitud",   fmt: v => v == null ? "" : v.toFixed(4), num: true},
     {k: "DECLONGITUDE", h: "Longitud", fmt: v => v == null ? "" : v.toFixed(4), num: true},
     {k: "ELC_asignado", h: "Nicho", num: true},
-    {k: "Distancia_ELC", h: "Dist. ELC", fmt: v => v == null ? "" : v.toFixed(4), num: true},
+    {k: "Distancia_ELC", h: "Dist. nicho", fmt: v => v == null ? "" : v.toFixed(4), num: true},
   ];
   let html = '<div class="table-wrap"><table><thead><tr>';
   for (const c of cols) html += `<th>${c.h}</th>`;
   html += "</tr></thead><tbody>";
-  // Cap render to first 1000 rows for performance; CSV gets the full set
-  const view = accs.slice(0, 1000);
+  const view = accs.slice(0, maxRows || 1000);
   for (const a of view) {
     html += "<tr>";
     for (const c of cols) {
@@ -941,15 +1140,70 @@ function refreshAccessionsTable() {
     html += "</tr>";
   }
   html += "</tbody></table></div>";
-  if (accs.length > 1000) {
+  if (accs.length > (maxRows || 1000)) {
     html += `<p style="font-size:0.78rem;color:#666;margin:0.4rem 0 0;">
-      Mostrando 1000 de ${accs.length.toLocaleString()} filas. Descargue el CSV para el conjunto completo.</p>`;
+      Mostrando ${maxRows || 1000} de ${accs.length.toLocaleString()} filas.</p>`;
   }
-  wrap.innerHTML = html;
+  return html;
+}
+
+function refreshAccessionsTable() {
+  const accs = filteredAccessions();
+  const matching = matchingNiches();
+  const TOTAL_NICHES = 27;
+  const nFiltro = matching.length;
+  const nicheSet = new Set(accs.map(a => a.ELC_asignado).filter(n => n != null));
+  const nRepr = nicheSet.size;
+  const speciesSet = new Set(accs.map(a => a.SPECIES).filter(Boolean));
+  const pctFiltro = ((nFiltro / TOTAL_NICHES) * 100).toFixed(1);
+  const pctRepr = ((nRepr / TOTAL_NICHES) * 100).toFixed(1);
+  const pctReprFiltro = nFiltro > 0 ? ((nRepr / nFiltro) * 100).toFixed(1) : "0.0";
+
+  const bar = document.getElementById("summaryBar");
+  bar.innerHTML = `
+    <div class="stat"><div class="num">${nFiltro} / ${TOTAL_NICHES}</div><div class="lbl">Nichos en filtro (${pctFiltro}%)</div></div>
+    <div class="stat"><div class="num">${nRepr} / ${nFiltro}</div><div class="lbl">Nichos repr. filtro (${pctReprFiltro}%)</div></div>
+    <div class="stat"><div class="num">${nRepr} / ${TOTAL_NICHES}</div><div class="lbl">Nichos repr. total (${pctRepr}%)</div></div>
+    <div class="stat"><div class="num">${accs.length.toLocaleString()}</div><div class="lbl">Accesiones</div></div>
+    <div class="stat"><div class="num">${speciesSet.size}</div><div class="lbl">Especies</div></div>
+  `;
+
+  const wrap = document.getElementById("accTablesWrap");
+  if (accs.length === 0) {
+    wrap.innerHTML = '<div class="empty">No hay accesiones cargadas o ninguna coincide con los filtros actuales. ' +
+      'Suba un archivo CSV o ajuste los rangos para ampliar la busqueda.</div>';
+    return;
+  }
+
+  if (State.selectedNiche != null) {
+    // Split: selected niche vs. the rest
+    const selAccs = accs.filter(a => a.ELC_asignado === State.selectedNiche);
+    const restAccs = accs.filter(a => a.ELC_asignado !== State.selectedNiche);
+
+    let html = `<h4 style="color:#1a5632;margin:0.5rem 0 0.3rem;">Nicho seleccionado: ${State.niche_names[State.selectedNiche]}</h4>`;
+    if (selAccs.length === 0) {
+      html += '<div class="empty">El nicho seleccionado no tiene accesiones con los filtros actuales.</div>';
+    } else {
+      html += `<p style="font-size:0.78rem;color:#666;margin:0 0 0.3rem;">${selAccs.length} accesiones en este nicho</p>`;
+      html += renderTable(selAccs, 1000);
+    }
+
+    if (restAccs.length > 0) {
+      const restNichSet = new Set(restAccs.map(a => a.ELC_asignado));
+      html += `<h4 style="color:#1a5632;margin:0.8rem 0 0.3rem;">Resto de nichos en el filtro</h4>`;
+      html += `<p style="font-size:0.78rem;color:#666;margin:0 0 0.3rem;">
+        ${restAccs.length} accesiones en ${restNichSet.size} nicho(s) adicional(es): ` +
+        Array.from(restNichSet).sort((a,b) => a-b).map(n => "N" + n).join(", ") + `</p>`;
+      html += renderTable(restAccs, 1000);
+    }
+    wrap.innerHTML = html;
+  } else {
+    wrap.innerHTML = renderTable(accs, 1000);
+  }
 }
 
 function downloadCsv() {
-  const accs = filteredAccessions();
+  const accs = selectedNichesAccessions();
   if (accs.length === 0) { alert("No hay accesiones para descargar."); return; }
   const cols = ["ACCENUMB","GENUS","SPECIES","CROPNAME","ORIGCTY","NAMECTY","ADM1",
                 "DECLATITUDE","DECLONGITUDE","ELC_asignado","Distancia_ELC"];
@@ -960,15 +1214,24 @@ function downloadCsv() {
   };
   let csv = cols.join(",") + "\n";
   for (const a of accs) {
-    csv += cols.map(c => esc(c === "GENUS" ? "Phaseolus" : a[c])).join(",") + "\n";
+    csv += cols.map(c => esc(a[c])).join(",") + "\n";
   }
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
+  const aEl = document.createElement("a");
   const nids = matchingNiches().join("-");
-  a.href = url; a.download = `accesiones_nichos_${nids}.csv`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  aEl.href = url; aEl.download = `accesiones_nichos_${nids}.csv`;
+  document.body.appendChild(aEl); aEl.click(); document.body.removeChild(aEl);
   URL.revokeObjectURL(url);
+}
+
+function selectedNichesAccessions() {
+  const accs = filteredAccessions();
+  if (State.selectedNiche != null) {
+    // Download only selected niche accessions
+    return accs.filter(a => a.ELC_asignado === State.selectedNiche);
+  }
+  return accs;
 }
 
 //=============================================================================
